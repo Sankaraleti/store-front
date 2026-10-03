@@ -4,12 +4,51 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Store Front design system
+ * ------------------------------------------------------------------
+ * Principles (luxury-editorial storefront):
+ *  - Monochrome UI. Product imagery supplies the colour; chrome stays
+ *    black, white and a few neutral greys.
+ *  - Square corners everywhere (radius 0). Hairline 1px borders.
+ *  - Geometric sans (Jost) for all type. Small, uppercase, widely
+ *    tracked labels for navigation/buttons; large, light, tight display
+ *    headings for editorial moments.
+ *  - Generous vertical rhythm, fluid page gutters, near full-bleed
+ *    layouts capped at a wide max width.
+ */
+
 @theme inline {
+  /* ---- Typography ---------------------------------------------- */
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* micro label size, below Tailwind's text-xs */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+
+  /* fluid editorial sizes */
+  --text-display: clamp(2.5rem, 1.5rem + 4.5vw, 6rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.02em;
+  --text-headline: clamp(1.75rem, 1.25rem + 2vw, 3rem);
+  --text-headline--line-height: 1.1;
+  --text-headline--letter-spacing: -0.01em;
+  --text-title: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+  --text-title--line-height: 1.25;
+
+  --tracking-label: 0.12em;
+  --tracking-nav: 0.08em;
+
+  /* ---- Colour (mapped from CSS variables below) ----------------- */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-border-strong: var(--border-strong);
+  --color-sale: var(--sale);
+  --color-success: var(--success);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -39,92 +78,277 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+
+  /* ---- Spacing -------------------------------------------------- */
+  /* p-gutter, px-gutter, gap-gutter ... */
+  --spacing-gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);
+  /* py-section, mt-section ... */
+  --spacing-section: clamp(3rem, 2rem + 5vw, 7.5rem);
+  --spacing-section-sm: clamp(2rem, 1.5rem + 2.5vw, 4rem);
+  /* h-header, top-header, scroll-mt-header */
+  --spacing-header: var(--header-height);
+
+  /* ---- Containers ----------------------------------------------- */
+  --container-page: 120rem; /* 1920px: near full-bleed */
+  --container-content: 80rem; /* 1280px: PDP, account, checkout */
+  --container-reading: 42rem; /* 672px: editorial copy, forms */
+
+  /* ---- Radius: square corners by default ------------------------ */
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+  --radius-3xl: var(--radius);
+  --radius-4xl: var(--radius);
+
+  /* ---- Imagery -------------------------------------------------- */
+  --aspect-product: 4 / 5;
+  --aspect-editorial: 3 / 4;
+  --aspect-hero: 16 / 9;
+
+  /* ---- Motion --------------------------------------------------- */
+  --ease-luxe: cubic-bezier(0.2, 0, 0, 1);
+  --default-transition-duration: 200ms;
+  --default-transition-timing-function: var(--ease-luxe);
 }
 
 :root {
+  --header-height: 3.5rem;
+
+  /* neutrals: pure black/white with soft greys; no hue in the chrome */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+  --surface: oklch(0.965 0 0); /* image wells, product cards */
+  --surface-foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --primary: oklch(0.145 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.965 0 0);
+  --secondary-foreground: oklch(0.145 0 0);
+  --muted: oklch(0.965 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --accent: oklch(0.965 0 0);
+  --accent-foreground: oklch(0.145 0 0);
+  --destructive: oklch(0.52 0.19 27);
+  --sale: oklch(0.52 0.19 27);
+  --success: oklch(0.5 0.1 155);
+  --border: oklch(0.9 0 0); /* hairline dividers */
+  --border-strong: oklch(0.145 0 0); /* active / selected */
+  --input: oklch(0.82 0 0);
+  --ring: oklch(0.145 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
+  --radius: 0;
+  --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-primary: oklch(0.145 0 0);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.965 0 0);
+  --sidebar-accent-foreground: oklch(0.145 0 0);
+  --sidebar-border: oklch(0.9 0 0);
+  --sidebar-ring: oklch(0.145 0 0);
+}
+
+@media (width >= 64rem) {
+  :root {
+    --header-height: 4.5rem;
+  }
 }
 
 .dark {
   --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --foreground: oklch(0.97 0 0);
+  --surface: oklch(0.2 0 0);
+  --surface-foreground: oklch(0.97 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.97 0 0);
+  --popover: oklch(0.18 0 0);
+  --popover-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.97 0 0);
+  --primary-foreground: oklch(0.145 0 0);
+  --secondary: oklch(0.22 0 0);
+  --secondary-foreground: oklch(0.97 0 0);
+  --muted: oklch(0.22 0 0);
+  --muted-foreground: oklch(0.7 0 0);
+  --accent: oklch(0.22 0 0);
+  --accent-foreground: oklch(0.97 0 0);
+  --destructive: oklch(0.7 0.17 25);
+  --sale: oklch(0.7 0.17 25);
+  --success: oklch(0.72 0.12 155);
+  --border: oklch(1 0 0 / 12%);
+  --border-strong: oklch(0.97 0 0);
+  --input: oklch(1 0 0 / 25%);
+  --ring: oklch(0.97 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar: oklch(0.145 0 0);
+  --sidebar-foreground: oklch(0.97 0 0);
+  --sidebar-primary: oklch(0.97 0 0);
+  --sidebar-primary-foreground: oklch(0.145 0 0);
+  --sidebar-accent: oklch(0.22 0 0);
+  --sidebar-accent-foreground: oklch(0.97 0 0);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.97 0 0);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
+    @apply border-border;
   }
   html {
     @apply font-sans;
+    scroll-padding-top: var(--header-height);
+    -webkit-text-size-adjust: 100%;
   }
+  body {
+    @apply bg-background text-sm leading-relaxed text-foreground;
+  }
+  ::selection {
+    @apply bg-foreground text-background;
+  }
+
+  /* Headings: light weight, tight leading, balanced wrapping */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading font-normal text-balance;
+  }
+  h1 {
+    @apply text-headline;
+  }
+  h2 {
+    @apply text-title;
+  }
+  h3 {
+    @apply text-base font-medium;
+  }
+  h4 {
+    @apply text-2xs font-medium tracking-label uppercase;
+  }
+  p {
+    text-wrap: pretty;
+  }
+
+  /* One focus treatment for everything: crisp monochrome outline */
+  :focus-visible {
+    @apply outline-1 outline-offset-2 outline-ring;
+  }
+
+  img,
+  video {
+    @apply h-auto max-w-full;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ---- Typography utilities --------------------------------------- */
+
+/* Uppercase micro label: eyebrows, nav items, tags, meta */
+@utility eyebrow {
+  @apply text-2xs font-medium tracking-label uppercase;
+}
+
+/* Large editorial headline over imagery or opening a section */
+@utility heading-display {
+  @apply font-heading text-display font-light text-balance;
+}
+
+/* Secondary copy: product meta, captions, helper text */
+@utility text-meta {
+  @apply text-xs leading-normal text-muted-foreground;
+}
+
+/* ---- Links ------------------------------------------------------- */
+
+/* Inline text link: hairline underline that fades out on hover */
+@utility link {
+  @apply underline decoration-current decoration-1 underline-offset-4 transition-[text-decoration-color] hover:decoration-transparent;
+}
+
+/* Quiet link: no underline until hover (footer, breadcrumbs, lists) */
+@utility link-subtle {
+  @apply decoration-transparent decoration-1 underline-offset-4 transition-[text-decoration-color] hover:underline hover:decoration-current;
+}
+
+/* Navigation link: uppercase label with an underline that grows in */
+@utility link-nav {
+  @apply eyebrow inline-flex items-center bg-gradient-to-r from-current to-current bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-0.5 tracking-nav transition-[background-size] duration-300 hover:bg-[length:100%_1px] aria-[current=page]:bg-[length:100%_1px];
+}
+
+/* ---- Layout primitives ------------------------------------------ */
+
+/* Full-width page shell with fluid gutters */
+@utility container-page {
+  @apply mx-auto w-full max-w-page px-gutter;
+}
+
+/* Narrower column for PDP details, account, checkout */
+@utility container-content {
+  @apply mx-auto w-full max-w-content px-gutter;
+}
+
+/* Reading width for editorial text and forms */
+@utility container-reading {
+  @apply mx-auto w-full max-w-reading px-gutter;
+}
+
+/* Vertical rhythm between page sections */
+@utility section {
+  @apply py-section;
+}
+
+/* Vertical stack with consistent spacing (override with gap-*) */
+@utility stack {
+  @apply flex flex-col gap-4;
+}
+
+/* Horizontal wrap group: tags, swatches, button rows */
+@utility cluster {
+  @apply flex flex-wrap items-center gap-3;
+}
+
+/* Product listing grid: 2 → 3 → 4 columns, tight columns, airy rows */
+@utility grid-products {
+  @apply grid grid-cols-2 gap-x-px gap-y-8 md:grid-cols-3 md:gap-y-12 xl:grid-cols-4;
+}
+
+/* Editorial split: stacked on mobile, side by side from lg */
+@utility grid-split {
+  @apply grid grid-cols-1 gap-gutter lg:grid-cols-2;
+}
+
+/* Image well: neutral backdrop while product shots load */
+@utility media {
+  @apply relative overflow-hidden bg-surface [&>img]:size-full [&>img]:object-cover [&>video]:size-full [&>video]:object-cover;
+}
+
+/* Horizontal scroll rail for carousels on touch, no visible bar */
+@utility rail {
+  @apply no-scrollbar flex snap-x snap-mandatory gap-px overflow-x-auto overscroll-x-contain [&>*]:shrink-0 [&>*]:snap-start;
+}
+
+/* Full-bleed hairline divider */
+@utility hairline {
+  @apply h-px w-full border-0 bg-border;
 }
