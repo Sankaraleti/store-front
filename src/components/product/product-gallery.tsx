@@ -27,7 +27,11 @@ export function ProductGallery({
       {images.map((image, index) => (
         <div
           key={image.src}
-          className="media aspect-product w-[88%] sm:w-[62%] lg:w-full"
+          className={cn(
+            "media aspect-product lg:w-full",
+            // only peek the next slide when there is one to swipe to
+            images.length > 1 ? "w-[88%] sm:w-[62%]" : "w-full"
+          )}
         >
           <Image
             src={image.src}
